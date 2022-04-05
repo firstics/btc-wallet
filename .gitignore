@@ -1,2 +1,27 @@
+# These are some examples of commonly ignored file patterns.
+# You should customize this list as applicable to your project.
+# Learn more about .gitignore:
+#     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+
+src/main/resources/service-account.json
+src/test/resources/service-account.json
+
+# Compiled Java class files
 *.class
+
+# Log files
 *.log
+
+# Package files
+
+# Maven
+target/
+dist/
+
+# JetBrains IDE
+.idea/
+.bsp/
+
+.vsocde/*
+.metals*
+.vscode/settings.json
