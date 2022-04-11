@@ -6,6 +6,6 @@ import java.sql.Timestamp
 import scala.concurrent.Future
 
 trait IRecordRepository {
-  def saveRecord(date: Timestamp, amount: Int): Future[Boolean]
+  def saveRecord(date: Timestamp, amount: Int): Future[(Boolean, String)]
   def getRecord(startDate: Timestamp, endDate: Timestamp): Future[List[Transaction]]
 }

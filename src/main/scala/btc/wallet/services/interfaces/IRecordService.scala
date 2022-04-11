@@ -1,12 +1,12 @@
 package btc.wallet.services.interfaces
 
-import btc.wallet.models.responses.{HistoryResponse, RecordResponse}
+import btc.wallet.models.responses.{HistoryResponder, RecordResponder}
+import btc.wallet.repositories.interfaces.IRecordRepository
 
 import scala.concurrent.Future
 
 trait IRecordService {
-  def saveRecord(dateTime: String, amount: Int): Future[RecordResponse]
-  def getHistory(startDate: String, endDate: String): Future[HistoryResponse]
-  def validateRecord(dateTime: String, amount: Int): List[Error]
-  def validateHistory(startDate: String, endDate: String): List[Error]
+  def saveRecord(dateTime: String, amount: Int): Future[RecordResponder]
+  def getHistory(startDate: String, endDate: String): Future[HistoryResponder]
+  def recordRepository: IRecordRepository
 }

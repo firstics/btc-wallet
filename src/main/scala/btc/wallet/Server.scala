@@ -5,7 +5,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.{Directives, Route}
 import btc.wallet.actors.ServerActor
 import btc.wallet.models.ServerRequest
-import btc.wallet.wrappers.interfaces.{IConfigurationWrapper, IDatabaseWrapper}
+import btc.wallet.wrappers.interfaces.{IConfigurationWrapper, IPostgresWrapper}
 import btc.wallet.wrappers.{ConfigurationWrapper, PostgresWrapper}
 
 import java.util.UUID
@@ -25,7 +25,7 @@ object Server extends Directives {
     systemActor ! ServerRequest("corelationId", UUID.randomUUID().toString)
 
     implicit val executionContextExecutor: ExecutionContextExecutor = system.dispatcher
-    implicit val rocksDBWrapper: IDatabaseWrapper = new PostgresWrapper()
+    implicit val dBWrapper: IPostgresWrapper = new PostgresWrapper()
 
     try {
       val serverRoute = new ServerRouting()

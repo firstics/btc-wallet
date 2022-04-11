@@ -10,15 +10,12 @@ object ErrorCode extends Enumeration {
   val E_0103: enums.ErrorCode.Value = Value("E_0103")
   val E_0104: enums.ErrorCode.Value = Value("E_0104")
 
-  val E_9999: enums.ErrorCode.Value = Value("E_9999")
 
   def getDefinition(errorCode: Value): String = {
     errorCode match {
       case E_0101 => "invalid token."
-      case E_0102 => "company is required."
-      case E_0103 => "token is required."
-      case E_0104 => "consent value not found."
-      case E_9999 => "Unknown error."
+      case E_0102 => "Record service exception."
+      case E_0103 => "Record repository exception."
     }
   }
 }
