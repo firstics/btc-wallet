@@ -1,6 +1,6 @@
 package btc.wallet.services
 
-import btc.wallet.models.Error
+import btc.wallet.models.{Error, Transaction}
 import btc.wallet.models.enums.ErrorCode
 import btc.wallet.models.responses.{HistoryResponder, RecordResponder}
 import btc.wallet.repositories.RecordRepository
@@ -16,26 +16,50 @@ class RecordService(implicit val executionContext: ExecutionContextExecutor,
                     implicit val configurationWrapper: IConfigurationWrapper,
                     implicit val postgresWrapper: IPostgresWrapper) extends IRecordService {
 
-  override def saveRecord(dateTime: String, amount: Int): Future[RecordResponder] = {
+  override def saveRecord(dateTime: String, amount: Float): Future[RecordResponder] = Future {
     try{
-      val errors: List[Error] = List.empty
-      val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SSSX")
+      var totalAmount: Float = amount
+      val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
       println(dateFormat.format(dateFormat.parse(dateTime).getTime))
-      val ts: Timestamp = new Timestamp(dateFormat.parse(dateTime).getTime)
-      println(ts)
-      recordRepository.saveRecord(ts, amount)
-        .map(value =>{
-          if(value._1) RecordResponder("success", Some(errors))
-          else RecordResponder("failed", Some(List(Error(Some(ErrorCode.E_0103), Some(value._2)))))
-        })
-        .recover {
-          case ex =>
-            RecordResponder("failed", Some(List(Error(Some(ErrorCode.E_0102), Some(ex.toString)))))
+      val currentTs: Timestamp = new Timestamp(dateFormat.parse(dateTime).getTime)
+      val dateSplit: Array[String] = dateTime.split('+')
+      if(dateSplit.length <= 2) {
+        if(dateSplit.length == 2) {
+          val timezone: Array[String] = dateSplit(1).split(':')
+          val hour: Int = currentTs.getHours + timezone(0).toInt
+          val minutes: Int = currentTs.getMinutes + timezone(1).toInt
+          currentTs.setHours(hour)
+          currentTs.setMinutes(minutes)
         }
+        currentTs.setMinutes(0)
+        currentTs.setSeconds(0)
+        val prevTx: Transaction = recordRepository.getLatestRecord
+        if(prevTx != null) {
+          totalAmount = prevTx.amount + amount
+          if(prevTx.dateTime == currentTs){
+            val result: (Boolean, String) = recordRepository.updateRecord(currentTs, totalAmount)
+            RecordResponder(result._1, Some(Error(Some(result._2))))
+          }
+          else if(prevTx.dateTime.getHours > currentTs.getHours) {
+            RecordResponder(false, Some(Error(Some("Invalid date time"))))
+          }
+          else {
+            val result: (Boolean, String) = recordRepository.saveRecord(currentTs, totalAmount)
+            RecordResponder(result._1, Some(Error(Some(result._2))))
+          }
+        }
+        else {
+          val result: (Boolean, String) = recordRepository.saveRecord(currentTs, totalAmount)
+          RecordResponder(result._1, Some(Error(Some(result._2))))
+        }
+      }
+      else {
+        RecordResponder(false, Some(Error(Some("Date time is in wrong format"))))
+      }
     }
     catch {
-      case ex: Exception => Future {
-        RecordResponder("failed", Some(List(Error(Some(ErrorCode.E_0102), Some(ex.toString)))))
+      case ex: Exception =>  {
+        RecordResponder(false, Some(Error(Some(ex.toString))))
       }
     }
 

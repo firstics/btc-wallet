@@ -26,9 +26,7 @@ class PostgresWrapper(implicit val configurationWrapper: IConfigurationWrapper,
     conn.asInstanceOf[T]
   }
 
-  override def read[T: Manifest](key: String): Future[T] = ???
-
-  override def write(preparedStatement: PreparedStatement): (ResultSet, String) =  {
+  override def executeQuery(preparedStatement: PreparedStatement): (ResultSet, String) =  {
     try {
       val result: ResultSet = preparedStatement.executeQuery()
       (result, "")

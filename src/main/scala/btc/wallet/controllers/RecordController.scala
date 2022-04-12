@@ -16,7 +16,7 @@ class RecordController(implicit val configurationWrapper: IConfigurationWrapper,
   def saveRecord(recordRequest: RecordRequester): Route = {
     onComplete(recordService.saveRecord(recordRequest.datetime, recordRequest.amount)) {
       case Success(value) => {
-        val code = if (value.results != null) {
+        val code = if (value.result) {
           StatusCodes.OK
         }
         else {
