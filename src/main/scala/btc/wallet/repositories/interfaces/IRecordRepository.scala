@@ -10,5 +10,5 @@ trait IRecordRepository {
   def updateRecord(date: Timestamp, amount: Float): (Boolean, String)
   def getLatestRecord: Transaction
   def getRecord(date: Timestamp): Transaction
-  def getRecords(startDate: Timestamp, endDate: Timestamp): List[Transaction]
+  def getRecords(startDate: Timestamp, endDate: Timestamp): (List[Transaction], String)
 }

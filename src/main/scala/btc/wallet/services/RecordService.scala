@@ -36,11 +36,11 @@ class RecordService(implicit val executionContext: ExecutionContextExecutor,
         val prevTx: Transaction = recordRepository.getLatestRecord
         if(prevTx != null) {
           totalAmount = prevTx.amount + amount
-          if(prevTx.dateTime == currentTs){
+          if(prevTx.dateTime.compareTo(currentTs) == 0) {
             val result: (Boolean, String) = recordRepository.updateRecord(currentTs, totalAmount)
             RecordResponder(result._1, Some(Error(Some(result._2))))
           }
-          else if(prevTx.dateTime.getHours > currentTs.getHours) {
+          else if(prevTx.dateTime.compareTo(currentTs) > 0) {
             RecordResponder(false, Some(Error(Some("Invalid date time"))))
           }
           else {
@@ -65,7 +65,26 @@ class RecordService(implicit val executionContext: ExecutionContextExecutor,
 
   }
 
-  override def getHistory(startDate: String, endDate: String): Future[HistoryResponder] = ???
+  override def getHistory(startDate: String, endDate: String): Future[HistoryResponder] = Future {
+    try {
+      val dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+      val startTs: Timestamp = new Timestamp(dateFormat.parse(startDate).getTime)
+      val endTs: Timestamp = new Timestamp(dateFormat.parse(endDate).getTime)
+      println(s"start: $startTs end: $endTs")
+      val result: (List[Transaction], String) = recordRepository.getRecords(startTs, endTs)
+      if(result._2.isEmpty) {
+        HistoryResponder(result._1, Some(Error(Some(result._2))))
+      }
+      else {
+        HistoryResponder(null, Some(Error(Some(result._2))))
+      }
+    }
+    catch {
+      case ex: Exception =>  {
+        HistoryResponder(null, Some(Error(Some(ex.toString))))
+      }
+    }
+  }
 
   override def recordRepository: IRecordRepository = {
     new RecordRepository

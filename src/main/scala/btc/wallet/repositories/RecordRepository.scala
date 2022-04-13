@@ -58,5 +58,19 @@ class RecordRepository(implicit val configurationWrapper: IConfigurationWrapper,
     }
   }
 
-  override def getRecords(startDate: Timestamp, endDate: Timestamp): List[Transaction] = ???
+  override def getRecords(startDate: Timestamp, endDate: Timestamp): (List[Transaction], String) = {
+    var txs: List[Transaction] = List.empty
+    val query: String = s"SELECT amount, date_time from $TABLE_NAME WHERE date_time BETWEEN '$startDate' and '$endDate'"
+    val preparedStatement: PreparedStatement = postgresWrapper.getConnection.asInstanceOf[Connection].prepareStatement(query)
+    val returnSet: (ResultSet, String) = postgresWrapper.executeQuery(preparedStatement)
+    if(returnSet._2.isEmpty) {
+      while(returnSet._1.next()) {
+        txs = txs :+ Transaction(returnSet._1.getTimestamp("date_time"), returnSet._1.getFloat("amount"))
+      }
+      (txs, returnSet._2)
+    }
+    else {
+      (List.empty, returnSet._2)
+    }
+  }
 }
