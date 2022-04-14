@@ -1,9 +1,8 @@
 package btc.wallet.wrappers.interfaces
 
-import java.sql.{PreparedStatement, ResultSet}
-import scala.concurrent.Future
+import java.sql.{Connection, PreparedStatement, ResultSet}
 
 trait IPostgresWrapper {
   def executeQuery(preparedStatement: PreparedStatement): (ResultSet, String)
-  def getConnection[T: Manifest]: T
+  def getConnection: Connection
 }

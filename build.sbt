@@ -30,7 +30,12 @@ lazy val root = (project in file("."))
       "com.google.code.gson"          %     "gson"                            %   "2.8.6"                       ,
       "org.json4s"                    %%    "json4s-native"                   %   "3.7.0-M8"                    ,
       "org.json4s"                    %%    "json4s-ext"                      %   "3.6.9"                       ,
-      "org.postgresql"                %     "postgresql"                      %   "42.2.5"
+      "org.postgresql"                %     "postgresql"                      %   "42.2.5"                      ,
+      "org.scalatest"                 %%    "scalatest"                       %   "3.1.0"                 % Test,
+      "org.mockito"                   %     "mockito-core"                    %   "3.5.11"                % Test,
+      "org.mockito"                   %%    "mockito-scala"                   %   "1.16.1"                      ,
+      "com.mockrunner"                %     "mockrunner-jdbc"                 %   "2.0.6"                 % Test
+
     )
   )
 checksums in update := Nil

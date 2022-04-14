@@ -1,14 +1,13 @@
 package btc.wallet.services
 
-import btc.wallet.models.{Error, Transaction}
-import btc.wallet.models.enums.ErrorCode
+import btc.wallet.models.{DisplayTransaction, Error, Transaction}
 import btc.wallet.models.responses.{HistoryResponder, RecordResponder}
 import btc.wallet.repositories.RecordRepository
 import btc.wallet.repositories.interfaces.IRecordRepository
 import btc.wallet.services.interfaces.IRecordService
 import btc.wallet.wrappers.interfaces.{IConfigurationWrapper, IPostgresWrapper}
 
-import java.sql.{Date, Timestamp}
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
@@ -71,7 +70,7 @@ class RecordService(implicit val executionContext: ExecutionContextExecutor,
       val startTs: Timestamp = new Timestamp(dateFormat.parse(startDate).getTime)
       val endTs: Timestamp = new Timestamp(dateFormat.parse(endDate).getTime)
       println(s"start: $startTs end: $endTs")
-      val result: (List[Transaction], String) = recordRepository.getRecords(startTs, endTs)
+      val result: (List[DisplayTransaction], String) = recordRepository.getRecords(startTs, endTs)
       if(result._2.isEmpty) {
         HistoryResponder(result._1, Some(Error(Some(result._2))))
       }

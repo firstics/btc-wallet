@@ -2,8 +2,8 @@ package btc.wallet.wrappers
 
 import btc.wallet.wrappers.interfaces.{IConfigurationWrapper, IPostgresWrapper}
 
-import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet, Timestamp}
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
+import scala.concurrent.ExecutionContextExecutor
 
 class PostgresWrapper(implicit val configurationWrapper: IConfigurationWrapper,
                       implicit val executionContext: ExecutionContextExecutor) extends IPostgresWrapper {
@@ -22,8 +22,8 @@ class PostgresWrapper(implicit val configurationWrapper: IConfigurationWrapper,
     DriverManager.getConnection(connection_str)
   }
 
-  override def getConnection[T: Manifest]: T = {
-    conn.asInstanceOf[T]
+  override def getConnection: Connection = {
+    conn
   }
 
   override def executeQuery(preparedStatement: PreparedStatement): (ResultSet, String) =  {
