@@ -19,7 +19,6 @@ class RecordRepository(implicit val configurationWrapper: IConfigurationWrapper,
     preparedStatement.setFloat(1, amount)
     preparedStatement.setTimestamp(2, date)
     val returnSet: (ResultSet, String) = postgresWrapper.executeQuery(preparedStatement)
-    println(returnSet._1.next())
     if(returnSet._2 == "" && returnSet._1.next()) (true, returnSet._2)
     else (false, returnSet._2)
   }

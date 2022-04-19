@@ -25,8 +25,8 @@ class RecordService(implicit val executionContext: ExecutionContextExecutor,
       if(dateSplit.length <= 2) {
         if(dateSplit.length == 2) {
           val timezone: Array[String] = dateSplit(1).split(':')
-          val hour: Int = currentTs.getHours + timezone(0).toInt
-          val minutes: Int = currentTs.getMinutes + timezone(1).toInt
+          val hour: Int = currentTs.getHours - timezone(0).toInt
+          val minutes: Int = currentTs.getMinutes - timezone(1).toInt
           currentTs.setHours(hour)
           currentTs.setMinutes(minutes)
         }
