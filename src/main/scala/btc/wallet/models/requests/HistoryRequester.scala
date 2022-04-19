@@ -1,3 +1,3 @@
 package btc.wallet.models.requests
 
-final case class HistoryRequester(startDate: String, endDate: String)
+final case class HistoryRequester(startDatetime: String, endDatetime: String)

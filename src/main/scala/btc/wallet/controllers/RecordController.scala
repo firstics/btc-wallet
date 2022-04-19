@@ -38,7 +38,7 @@ class RecordController(implicit val configurationWrapper: IConfigurationWrapper,
   }
 
   def getHistory(historyRequest: HistoryRequester): Route = {
-    onComplete(recordService.getHistory(historyRequest.startDate, historyRequest.endDate)) {
+    onComplete(recordService.getHistory(historyRequest.startDatetime, historyRequest.endDatetime)) {
       case Success(value) => {
         val code = if (value.results != null) {
           StatusCodes.OK
